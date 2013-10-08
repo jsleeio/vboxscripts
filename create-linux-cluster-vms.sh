@@ -2,7 +2,7 @@
 
 # John Slee <john@slee.id.au> Wed 25 Sep 2013 13:53:48 MYT
 
-nodes=4
+nodes=2
 cvm=$HOME/bin/create-linux-vm.sh
 test -x $cvm || exit 1
 vmtop="$HOME/VirtualBox VMs"

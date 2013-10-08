@@ -13,13 +13,13 @@ if test -z "$vmbase" ; then
 fi
 
 nodes=2
-asmdisks=2
+asmdisks=3
 
 clustervdi="$vmtop/clustervdi/$vmbase"
 mkdir -p "$clustervdi" || ( echo "$0: can't create cluster storage directory"; exit 3 )
 for asmnum in $(seq 1 $asmdisks) ; do
 	echo "$0: creating ASM disk #$asmnum"
-	VBoxManage createhd --filename "$clustervdi/asm$asmnum.vdi" --size 8192 --variant Fixed
+	VBoxManage createhd --filename "$clustervdi/asm$asmnum.vdi" --size 2048 --variant Fixed
 	VBoxManage modifyhd "$clustervdi/asm$asmnum.vdi" --type shareable
 done
 
@@ -30,9 +30,6 @@ for nodenum in $(seq 1 $nodes) ; do
 	$cvm $vmname
 	# Oracle RAC needs a cluster interconnect network, so add one
 	VBoxManage modifyvm $vmname --nic2 intnet --nictype2 82540EM --intnet1 rac
-	# add a disk to contain Oracle software installations
-	VBoxManage createhd --filename "$vmtop/$vmname/$vmname-oracle.vdi" --size 8192 --format vdi
-	VBoxManage storageattach $vmname --type hdd --storagectl sata0 --port 2 --medium "$vmtop/$vmname/$vmname-oracle.vdi" 
 	# attach the shared disks to be used for Oracle ASM
 	for asmnum in $(seq 1 $asmdisks) ; do
 		echo "$0: attaching ASM disk #$asmnum"
